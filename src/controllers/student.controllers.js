@@ -1,9 +1,10 @@
-import Student from "../models/student.models.js";
+import {Student} from "../models/student.models.js";
 
 
 // Creating the Studens
 export const createStudent = async (req, res) => {
   try {
+    console.log("REQ BODY:", req.body);
     const {
       studentId,
       name,
@@ -28,7 +29,11 @@ export const createStudent = async (req, res) => {
       gender
     });
 
-    res.status(200).json("Student Created Successfully");
+   res.status(200).json({
+     success: true,
+     message: "Student created successfully",
+     student, 
+   });
   } catch (error) {
     res.status(400).json({message:error.message});
   }
@@ -40,7 +45,10 @@ export const getAllStudent = async (req,res) => {
     try {
         const student = await Student.find();
 
-        res.status(200).json("Students fetched successfully");
+       res.status(200).json({
+         message: "Students fetched successfully",
+         students: student,
+       });
     } catch (error) {
         res.status(400).json({message:error.message});
     }
@@ -65,7 +73,7 @@ export const getStudentById = async (req,res) => {
 // Updating the student
 export const updateStudent = async(req,res) => {
     try {
-        const updated = Student.findByIdAndUpdate(req.params.id,req.body,{
+        const updated = await Student.findByIdAndUpdate(req.params.id,req.body,{
             new:true,
             runValidations:true
         });
@@ -83,7 +91,7 @@ export const updateStudent = async(req,res) => {
 // Deleting the student 
 export const deleteStudent = async(req,res) => {
     try {
-        const deleted = Student.findByIdAndDelete(req.params.id);
+        const deleted = await Student.findByIdAndDelete(req.params.id);
         if(!deleted)
         {
             res.status(404).json("Plese enter the StudentId");
